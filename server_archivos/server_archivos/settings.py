@@ -31,7 +31,6 @@ INSTALLED_APPS = [
     # Apps Locales
     "usuario",
     "repositorio",
-    "repositorio.apps.RepositorioConfig",
     "core",
     "rest",
     # Apps Externas

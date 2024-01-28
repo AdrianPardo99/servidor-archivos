@@ -1,0 +1,29 @@
+version: '3'
+
+volumes:
+  local_postgres_data: {}
+
+services:
+  server:
+    build: .
+    command: /start
+    volumes:
+      - .:/app
+    env_file: .env
+    ports:
+      - "8001:8000"
+    depends_on:
+      - db
+    stdin_open: true
+    tty: true
+    restart: on-failure
+
+  db:
+    restart: on-failure
+    image: postgres:latest
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - local_postgres_data:/var/lib/postgresql/data:Z

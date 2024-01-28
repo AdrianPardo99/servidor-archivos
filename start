@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+bash wait.sh db:5432
+
+python /app/server_archivos/manage.py migrate
+
+VAR_NAME="ENVIRONMENT"
+
+if [ -z "${!VAR_NAME}" ]; then
+    # Environment variable does not exist, so create it with the value 'container'
+    export $VAR_NAME="container"
+fi
+
+if [ $ENVIRONMENT == "local" ]; then
+    echo "Ejecuta python"
+    python /app//server_archivos/manage.py runserver 0.0.0.0:8000
+else
+    echo "Ejecuta gunicorn"
+    gunicorn --forwarded-allow-ips="*" --pythonpath /app/server_archivos server_archivos:wsgi:application --workers=2 --blind ["0.0.0.0"]
+fi

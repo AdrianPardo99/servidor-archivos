@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Software, Carpeta
+from .models import Software, Carpeta, Compendio
 
 
 @admin.register(Software)
@@ -21,5 +21,19 @@ class CarpetaAdmin(admin.ModelAdmin):
         "nombre",
         "activo",
         "creacion",
+    )
+    readonly_fields = ("activo",)
+
+
+@admin.register(Compendio)
+class CompendioAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "nombre",
+        "cantidad",
+        "carpeta",
+        "activo",
+        "creacion",
+        "actualizado",
     )
     readonly_fields = ("activo",)

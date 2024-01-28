@@ -20,5 +20,5 @@ if [ $ENVIRONMENT == "local" ]; then
     python /app//server_archivos/manage.py runserver 0.0.0.0:8000
 else
     echo "Ejecuta gunicorn"
-    gunicorn --forwarded-allow-ips="*" --pythonpath /app/server_archivos server_archivos:wsgi:application --workers=2 --blind ["0.0.0.0"]
+    gunicorn --forwarded-allow-ips="*" --pythonpath /app/server_archivos server_archivos:wsgi:application --workers=2 --bind ["0.0.0.0"]
 fi

@@ -15,3 +15,9 @@ router.register(
     viewset=views.CarpetaViewSet,
     basename="carpeta",
 )
+
+router.register(
+    prefix="descarga",
+    viewset=views.DescargaViewSet,
+    basename="descarga",
+)

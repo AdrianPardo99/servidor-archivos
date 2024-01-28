@@ -1,5 +1,3 @@
-from django.contrib.auth.models import AnonymousUser
-
 from rest_framework import serializers
 
 from repositorio.models import Software, Carpeta
@@ -13,11 +11,16 @@ class SoftwareSerializer(serializers.ModelSerializer):
             "documento",
         ]
 
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep["id"] = instance.id
+        return rep
+
 
 class ListarSoftwareSerializer(SoftwareSerializer):
     class Meta(SoftwareSerializer.Meta):
         model = SoftwareSerializer.Meta.model
-        fields = ["pk"] + SoftwareSerializer.Meta.fields
+        fields = ["id"] + SoftwareSerializer.Meta.fields
 
 
 class CrearSoftwareSerializer(SoftwareSerializer):
@@ -40,19 +43,19 @@ class CarpetaSerializer(serializers.ModelSerializer):
             "archivos",
         ]
 
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep["archivos"] = []
+        for archivo in instance.archivos.all():
+            rep["archivos"].append(str(archivo))
+        rep["id"] = instance.id
+        return rep
+
 
 class ListarCarpetaSerializer(CarpetaSerializer):
     class Meta(CarpetaSerializer.Meta):
         model = CarpetaSerializer.Meta.model
-        fields = ["pk"] + CarpetaSerializer.Meta.fields
-
-    def to_representation(self, instance):
-        rep = super().to_representation(instance)
-        rep["archivos"] = []
-        print(dir(instance.archivos))
-        for archivo in instance.archivos.all():
-            rep["archivos"].append(str(archivo))
-        return rep
+        fields = ["id"] + CarpetaSerializer.Meta.fields
 
 
 class CrearCarpetaSerializer(CarpetaSerializer):

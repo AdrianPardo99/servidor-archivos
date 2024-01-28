@@ -1,5 +1,7 @@
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 
+from wsgiref.util import FileWrapper
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAdminUser, AllowAny
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -17,6 +19,7 @@ from .serializers import (
     ListarCarpetaSerializer,
     CrearCarpetaSerializer,
     ActualizarCarpetaSerializer,
+    Compendio,
 )
 from rest.pagination import CustomPagination
 from repositorio.utils import get_zip_file
@@ -158,9 +161,12 @@ class DescargaViewSet(ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        temp_file = get_zip_file(instance)
-        response = HttpResponse(temp_file, content_type="application/zip")
-        response[
-            "Content-Disposition"
-        ] = f"attachment; filename={instance.nombre}_output.zip"
+        obj = get_object_or_404(Compendio, carpeta=instance)
+        file_path = obj.archivo.path
+        file_name = obj.nombre
+
+        response = HttpResponse(
+            FileWrapper(open(file_path, "rb")), content_type="application/zip"
+        )
+        response["Content-Disposition"] = f'attachment; filename="{file_name}"'
         return response

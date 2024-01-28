@@ -34,3 +34,21 @@ class Carpeta(BaseModel):
 
     def __str__(self):
         return f"{self.pk} .- {self.nombre}"
+
+
+class Compendio(BaseModel):
+    nombre = models.TextField()
+    archivo = models.FileField(upload_to="zip/")
+    cantidad = models.IntegerField()
+    carpeta = models.OneToOneField(
+        Carpeta,
+        on_delete=models.DO_NOTHING,
+    )
+
+    class Meta:
+        db_table = "compendio"
+        verbose_name = "Compendio"
+        verbose_name_plural = "Compendios"
+
+    def __str__(self):
+        return f"{self.pk} - {self.nombre} - {self.cantidad}"

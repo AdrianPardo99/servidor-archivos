@@ -2,6 +2,7 @@ version: '3'
 
 volumes:
   local_postgres_data: {}
+  redis_data: {}
 
 services:
   server:
@@ -27,3 +28,36 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - local_postgres_data:/var/lib/postgresql/data:Z
+      
+  redis:  # Define the Redis service
+    image: "redis:alpine"
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    restart: on-failure
+
+  celery:
+    build: .
+    command: bash -c "cd server_archivos && celery -A server_archivos worker --loglevel=info"
+    volumes:
+      - .:/app
+    depends_on:
+      - server
+      - redis
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+    restart: on-failure
+
+  celery-beat:
+    build: .
+    command: bash -c "cd server_archivos && celery -A server_archivos beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+    volumes:
+      - .:/app
+    depends_on:
+      - server
+      - redis
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+    restart: on-failure
+

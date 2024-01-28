@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from repositorio.models import Software, Carpeta
+from repositorio.models import Software, Carpeta, Compendio
 
 
 class SoftwareSerializer(serializers.ModelSerializer):

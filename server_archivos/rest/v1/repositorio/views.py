@@ -118,7 +118,7 @@ class CarpetaViewSet(ModelViewSet):
 
 
 class DescargaViewSet(ModelViewSet):
-    """ViewSet de interacción con el modelo de datos Carpeta y descargar los archivos que contiene dicha Carpeta"""
+    """ViewSet de interacción con el modelo de datos Carpeta y descargar los archivos que contiene la misma"""
 
     permission_classes = [AllowAny]
     queryset = Carpeta.objects.filter().order_by("creacion")
@@ -156,12 +156,11 @@ class DescargaViewSet(ModelViewSet):
             )
         return super().list(request, *args, **kwargs)
 
-    def retrieve(self, _, __, ___):
+    def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         temp_file = get_zip_file(instance)
         response = HttpResponse(temp_file, content_type="application/zip")
         response[
             "Content-Disposition"
         ] = f"attachment; filename={instance.nombre}_output.zip"
-
         return response

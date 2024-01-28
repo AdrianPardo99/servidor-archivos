@@ -5,6 +5,7 @@ from .models import Software, Carpeta
 @admin.register(Software)
 class SoftwareAdmin(admin.ModelAdmin):
     list_display = (
+        "id",
         "nombre",
         "documento",
         "activo",
@@ -16,6 +17,7 @@ class SoftwareAdmin(admin.ModelAdmin):
 @admin.register(Carpeta)
 class CarpetaAdmin(admin.ModelAdmin):
     list_display = (
+        "id",
         "nombre",
         "activo",
         "creacion",

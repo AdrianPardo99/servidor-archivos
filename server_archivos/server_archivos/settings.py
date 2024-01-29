@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "simple_history",
     "debug_toolbar",
+    "django_celery_beat"
 ]
 
 MIDDLEWARE = [

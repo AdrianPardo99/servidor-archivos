@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
-from django.conf.urls.static import static
+from django.conf.urls.static import static, serve as static_serve
 
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -42,8 +42,12 @@ urlpatterns = [
     ),
 ]
 
-if settings.SERVE_LOCAL_STORAGE:
+if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-if settings.DEBUG:
     urlpatterns += [path("__debug__/", include(debug_toolbar.urls))]
+
+if not settings.DEBUG:
+    urlpatterns += [
+        path("media/<path:path>", static_serve, {"document_root": settings.MEDIA_ROOT}),
+    ]

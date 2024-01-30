@@ -58,6 +58,8 @@ MIDDLEWARE = [
     "simple_history.middleware.HistoryRequestMiddleware",
     # Cors para verificar velocidad de querys
     "debug_toolbar.middleware.DebugToolbarMiddleware",
+    # Cors para servir media en local
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = "server_archivos.urls"
@@ -126,7 +128,7 @@ USE_TZ = True
 DEFAULT_CHARSET = "utf-8"
 
 # Storage Local config
-SERVE_LOCAL_STORAGE = config("SERVE_LOCAL_STORAGE", default=True, cast=bool)
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # Static files (CSS, JavaScript, Images)
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = "static/"

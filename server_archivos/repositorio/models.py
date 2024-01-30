@@ -4,6 +4,7 @@ from django.utils import timezone
 from simple_history.models import HistoricalRecords
 
 from core.models import BaseModelSoftDelete, BaseModel
+from core.storage import OverwriteStorage
 
 
 class Software(BaseModelSoftDelete):
@@ -38,7 +39,10 @@ class Carpeta(BaseModelSoftDelete):
 
 class Compendio(BaseModel):
     nombre = models.TextField()
-    archivo = models.FileField(upload_to="zip/")
+    archivo = models.FileField(
+        upload_to="zip/",
+        storage=OverwriteStorage,
+    )
     cantidad = models.IntegerField()
     hash = models.TextField(default="NA")
     carpeta = models.OneToOneField(

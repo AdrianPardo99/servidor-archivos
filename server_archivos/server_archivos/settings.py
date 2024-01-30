@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "simple_history",
     "debug_toolbar",
-    "django_celery_beat"
+    "django_celery_beat",
 ]
 
 MIDDLEWARE = [
@@ -125,6 +125,8 @@ USE_TZ = True
 
 DEFAULT_CHARSET = "utf-8"
 
+# Storage Local config
+SERVE_LOCAL_STORAGE = config("SERVE_LOCAL_STORAGE", default=True, cast=bool)
 # Static files (CSS, JavaScript, Images)
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = "static/"

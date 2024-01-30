@@ -31,9 +31,15 @@ class CompendioAdmin(admin.ModelAdmin):
         "id",
         "nombre",
         "cantidad",
+        "hash",
         "carpeta",
-        "activo",
         "creacion",
         "actualizado",
     )
-    readonly_fields = ("activo",)
+    readonly_fields = (
+        "nombre",
+        "archivo",
+        "cantidad",
+        "hash",
+        "carpeta",
+    )

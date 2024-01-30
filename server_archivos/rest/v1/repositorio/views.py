@@ -1,7 +1,3 @@
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
-
-from wsgiref.util import FileWrapper
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAdminUser, AllowAny
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -20,9 +16,9 @@ from .serializers import (
     CrearCarpetaSerializer,
     ActualizarCarpetaSerializer,
     Compendio,
+    ListarCompendioSerializer,
 )
 from rest.pagination import CustomPagination
-from repositorio.utils import get_zip_file
 
 
 class SoftwareViewSet(ModelViewSet):
@@ -124,7 +120,7 @@ class DescargaViewSet(ModelViewSet):
     """ViewSet de interacción con el modelo de datos Carpeta y descargar los archivos que contiene la misma"""
 
     permission_classes = [AllowAny]
-    queryset = Carpeta.objects.filter().order_by("creacion")
+    queryset = Compendio.objects.filter().order_by("creacion")
     http_method_names = [
         "get",
     ]
@@ -137,7 +133,7 @@ class DescargaViewSet(ModelViewSet):
         "nombre",
     ]
     lookup_field = "pk"
-    serializer_class = ListarCarpetaSerializer
+    serializer_class = ListarCompendioSerializer
 
     @swagger_auto_schema(
         manual_parameters=[
@@ -158,15 +154,3 @@ class DescargaViewSet(ModelViewSet):
                 CustomPagination  # Utiliza tu paginación personalizada
             )
         return super().list(request, *args, **kwargs)
-
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        obj = get_object_or_404(Compendio, carpeta=instance)
-        file_path = obj.archivo.path
-        file_name = obj.nombre
-
-        response = HttpResponse(
-            FileWrapper(open(file_path, "rb")), content_type="application/zip"
-        )
-        response["Content-Disposition"] = f'attachment; filename="{file_name}"'
-        return response

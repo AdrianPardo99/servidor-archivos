@@ -37,7 +37,7 @@ class SoftDeleteManager(models.Manager):
         return self.get_queryset().hard_delete()
 
 
-class BaseModel(models.Model):
+class BaseModelSoftDelete(models.Model):
     creacion = models.DateTimeField(auto_now_add=True)
     actualizado = models.DateTimeField(auto_now=True)
     activo = models.BooleanField(default=True)
@@ -58,6 +58,14 @@ class BaseModel(models.Model):
     def hard_delete(self):
         # Hace una eliminacion directa
         super().delete()
+
+    class Meta:
+        abstract = True
+
+
+class BaseModel(models.Model):
+    creacion = models.DateTimeField(auto_now_add=True)
+    actualizado = models.DateTimeField(auto_now=True)
 
     class Meta:
         abstract = True

@@ -36,6 +36,8 @@ class ActualizarSoftwareSerializer(SoftwareSerializer):
 
 
 class CarpetaSerializer(serializers.ModelSerializer):
+    archivos = ListarSoftwareSerializer(many=True)
+
     class Meta:
         model = Carpeta
         fields = [
@@ -45,9 +47,6 @@ class CarpetaSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         rep = super().to_representation(instance)
-        rep["archivos"] = []
-        for archivo in instance.archivos.all():
-            rep["archivos"].append(str(archivo))
         rep["id"] = instance.id
         return rep
 
@@ -68,3 +67,48 @@ class ActualizarCarpetaSerializer(CarpetaSerializer):
     class Meta(CarpetaSerializer.Meta):
         model = CarpetaSerializer.Meta.model
         fields = ("archivos",)
+
+
+class CompendioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Compendio
+        fields = [
+            "nombre",
+            "cantidad",
+            "hash",
+            "creacion",
+            "actualizado",
+        ]
+
+
+class ListarCompendioSerializer(CompendioSerializer):
+    download_url = serializers.FileField(source="archivo")
+
+    class Meta(CompendioSerializer.Meta):
+        model = CompendioSerializer.Meta.model
+        fields = ["download_url"] + CompendioSerializer.Meta.fields
+
+
+class SoftwareHashSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Software
+        fields = (
+            "id",
+            "nombre",
+            "documento",
+            "creacion",
+            "actualizado",
+        )
+
+
+class CarpetaHashSerializer(serializers.ModelSerializer):
+    archivos = SoftwareHashSerializer(many=True)
+
+    class Meta:
+        model = Carpeta
+        fields = (
+            "id",
+            "nombre",
+            "archivos",
+            "creacion",
+        )

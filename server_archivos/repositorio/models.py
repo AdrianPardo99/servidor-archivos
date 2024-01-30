@@ -3,10 +3,10 @@ from django.utils import timezone
 
 from simple_history.models import HistoricalRecords
 
-from core.models import BaseModel
+from core.models import BaseModelSoftDelete, BaseModel
 
 
-class Software(BaseModel):
+class Software(BaseModelSoftDelete):
     nombre = models.TextField()
     documento = models.FileField(upload_to="software/")
     history = HistoricalRecords()
@@ -20,7 +20,7 @@ class Software(BaseModel):
         return f"{self.pk} .- {self.nombre} * {self.documento} *"
 
 
-class Carpeta(BaseModel):
+class Carpeta(BaseModelSoftDelete):
     nombre = models.TextField()
     archivos = models.ManyToManyField(
         Software,
@@ -40,6 +40,7 @@ class Compendio(BaseModel):
     nombre = models.TextField()
     archivo = models.FileField(upload_to="zip/")
     cantidad = models.IntegerField()
+    hash = models.TextField(default="NA")
     carpeta = models.OneToOneField(
         Carpeta,
         on_delete=models.DO_NOTHING,
@@ -51,4 +52,4 @@ class Compendio(BaseModel):
         verbose_name_plural = "Compendios"
 
     def __str__(self):
-        return f"{self.pk} - {self.nombre} - {self.cantidad}"
+        return f"{self.pk} - {self.nombre} - {self.hash}"

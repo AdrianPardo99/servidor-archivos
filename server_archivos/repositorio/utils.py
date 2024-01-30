@@ -18,7 +18,9 @@ def get_extension(filename):
 def get_zip_file(instance: Carpeta):
     temp_file = tempfile.TemporaryFile()
 
-    with zipfile.ZipFile(temp_file, "w", zipfile.ZIP_DEFLATED) as zip_stream:
+    with zipfile.ZipFile(
+        temp_file, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9
+    ) as zip_stream:
         for archivo in instance.archivos.all():
             extension = get_extension(archivo.documento.name)
             file_name = archivo.nombre + extension
